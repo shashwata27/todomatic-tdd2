@@ -135,7 +135,7 @@ describe("Functionality of App", () => {
 
     expect(allTodoLabels.length).toBe(4);
   });
-  test.only("Should toggle task staus when checkbox pressed", () => {
+  test("Should toggle task staus when checkbox pressed", () => {
     render(<App tasks={DATA} />);
     const todo = screen.getByTestId("testid-Eat");
     const checkbox = within(todo).getByRole("checkbox");
@@ -143,5 +143,31 @@ describe("Functionality of App", () => {
     expect(checkbox).toBeChecked();
     user.click(checkbox);
     expect(checkbox).not.toBeChecked();
+  });
+  test("Should filter todo when filters pressed", () => {
+    render(<App tasks={DATA} />);
+    const alltasks = screen.getByRole("button", {
+      name: /show all tasks/i,
+    });
+    const activeTasks = screen.getByRole("button", {
+      name: /show active tasks/i,
+    });
+    const completedTaks = screen.getByRole("button", {
+      name: /show completed tasks/i,
+    });
+    let allTodoLabels = screen.getAllByRole("todo-label");
+
+    user.click(alltasks);
+    expect(allTodoLabels.length).toBe(3);
+
+    user.click(activeTasks);
+
+    allTodoLabels = screen.getAllByRole("todo-label");
+    expect(allTodoLabels.length).toBe(2);
+
+    user.click(completedTaks);
+
+    allTodoLabels = screen.getAllByRole("todo-label");
+    expect(allTodoLabels.length).toBe(1);
   });
 });
