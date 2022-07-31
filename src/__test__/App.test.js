@@ -1,12 +1,11 @@
 import { shallow } from "enzyme";
-import { screen, render, within, getAllByRole } from "@testing-library/react";
+import { screen, render, within } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import App from "../App";
 import { DATA } from "../data/taskData";
 import Form from "../components/Form/Form";
 import Todo from "../components/Todo/Todo";
 import FilterButton from "../components/FilterButton/FilterButton";
-import userEvent from "@testing-library/user-event";
 
 describe("Basic Structure of App", () => {
   test("should have a h1 tag", () => {
@@ -68,22 +67,16 @@ describe("Functionality of App", () => {
     expect(eatTodo).toHaveTextContent(/eat/i);
     expect(eatTodo).toBeInTheDocument();
 
-    const deleteButton = screen.getByRole("button", {
-      name: /delete eat/i,
-    });
+    const deleteButton = getByRoleWithName("button", /delete eat/i);
     user.click(deleteButton);
     expect(eatTodo).not.toBeInTheDocument();
   });
   test("Should go to edit mode TODO when edit button pressed", () => {
     render(<App tasks={DATA} />);
 
-    const editButton = screen.getByRole("button", {
-      name: /edit eat/i,
-    });
+    const editButton = getByRoleWithName("button", /edit eat/i);
     user.click(editButton);
-    const editViewInput = screen.getByRole("textbox", {
-      name: /new name for eat/i,
-    });
+    const editViewInput = getByRoleWithName("textbox", /new name for eat/i);
 
     expect(editViewInput).toBeInTheDocument();
     expect(editViewInput).toHaveTextContent("");
@@ -92,20 +85,14 @@ describe("Functionality of App", () => {
     render(<App tasks={DATA} />);
     const eatTodo = screen.getByTestId("testid-Eat");
     const todoLabel = within(eatTodo).getByRole("todo-label");
-    const editButton = screen.getByRole("button", {
-      name: /edit eat/i,
-    });
+    const editButton = getByRoleWithName("button", /edit eat/i);
 
     expect(todoLabel).toHaveTextContent(/eat/i);
 
     user.click(editButton);
 
-    const editViewInput = screen.getByRole("textbox", {
-      name: /new name for eat/i,
-    });
-    const saveButton = screen.getByRole("button", {
-      name: /save new name for eat/i,
-    });
+    const editViewInput = getByRoleWithName("textbox", /new name for eat/i);
+    const saveButton = getByRoleWithName("button", /save new name for eat/i);
 
     user.type(editViewInput, "fast eat");
     user.click(saveButton);
@@ -121,9 +108,7 @@ describe("Functionality of App", () => {
   test("Should add new todo when add button pressed", () => {
     render(<App tasks={DATA} />);
     const formInput = screen.getByLabelText(/What needs to be done/i);
-    const addButton = screen.getByRole("button", {
-      name: /add/i,
-    });
+    const addButton = getByRoleWithName("button", /add/i);
     let allTodoLabels = screen.getAllByRole("todo-label");
 
     expect(allTodoLabels.length).toBe(3);
@@ -146,15 +131,9 @@ describe("Functionality of App", () => {
   });
   test("Should filter todo when filters pressed", () => {
     render(<App tasks={DATA} />);
-    const alltasks = screen.getByRole("button", {
-      name: /show all tasks/i,
-    });
-    const activeTasks = screen.getByRole("button", {
-      name: /show active tasks/i,
-    });
-    const completedTaks = screen.getByRole("button", {
-      name: /show completed tasks/i,
-    });
+    const alltasks = getByRoleWithName("button", /show all tasks/i);
+    const activeTasks = getByRoleWithName("button", /show active tasks/i);
+    const completedTaks = getByRoleWithName("button", /show completed tasks/i);
     let allTodoLabels = screen.getAllByRole("todo-label");
 
     user.click(alltasks);
@@ -171,3 +150,8 @@ describe("Functionality of App", () => {
     expect(allTodoLabels.length).toBe(1);
   });
 });
+
+const getByRoleWithName = (role, roleName) =>
+  screen.getByRole(role, {
+    name: roleName,
+  });
