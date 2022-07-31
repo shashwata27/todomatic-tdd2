@@ -23,7 +23,11 @@ const Todo = (props) => {
   const onDelete = () => props.deleteTask(props.id);
 
   const editingTemplate = (
-    <form aria-label="form" className="stack-small">
+    <form
+      data-testid={`testid-${props.name}`}
+      aria-label="form"
+      className="stack-small"
+    >
       <div className="form-group">
         <label role="todo-label" className="todo-label" htmlFor={props.id}>
           New name for {props.name}
@@ -55,7 +59,7 @@ const Todo = (props) => {
     </form>
   );
   const viewTemplate = (
-    <div className="stack-small">
+    <div data-testid={`testid-${props.name}`} className="stack-small">
       <div className="c-cb">
         <input
           id={props.id}
